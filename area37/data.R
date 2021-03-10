@@ -5,19 +5,14 @@
 
 library(icesTAF)
 
-mkdir("data")
-
-## ----setup, include=FALSE-------------------------------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(sraplus)
 library(here)
+library(janitor)
 
+mkdir("data")
 
-## -------------------------------------------------------------------------------------------------
-# setwd("C:/Users/rishi/Documents/Area37Marcelo")
-library(here)
-indo <- read.csv("Area37cuyrrentsofia.csv", header = T)
+indo <- read.csv("bootstrap/data/Area37cuyrrentsofia.csv", header = TRUE)
 # this is what we would call an "wide" format which is really not condusive to analysis. We're going to make it longer
 
 indo <- indo%>%
@@ -84,7 +79,7 @@ indo <- indo %>%
 
 ## -------------------------------------------------------------------------------------------------
 # setwd("C:\\Users\\rishi\\Documents\\Area37Marcelo")
-Indoeffort<-read.csv("EffortindexRousseaAugNominal.csv", header=T)
+Indoeffort <- read.csv("bootstrap/data/EffortindexRousseaAugNominal.csv", header = TRUE)
 index<-Indoeffort$E1
 
 indo <- indo %>%
