@@ -15,6 +15,16 @@ taf.bootstrap()
 sourceAll()
 ```
 
+## Dependencies
+
+This analysis uses the `sraplus` package, which has many underlying package
+dependencies. These are all installed automatically with one command:
+
+```
+library(remotes)
+install_github("DanOvando/sraplus")
+```
+
 ## Explore results
 
 The results from each script appear in the corresponding working subdirectory.
