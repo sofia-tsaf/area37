@@ -90,3 +90,37 @@ nested_indo<- indo %>%
   group_by(stock, taxa) %>%
   nest() %>%
   ungroup()
+
+
+## -------------------------------------------------------------------------------------------------
+
+nested_indo <- nested_indo %>%
+  mutate(
+    driors = map2(
+      taxa,
+      data,
+      ~
+      format_driors(
+      taxa = .x,shape_prior=2,      #use_heuristics = T,shape_prior=2,
+      catch = .y$capture,
+      years = .y$year,
+      initial_state = 0.75,initial_state_cv = 0.1,b_ref_type = "k",
+      terminal_state = 0.41,terminal_state_cv = 0.23,
+      effort = .y$E1[!is.na(.y$E1)],effort_years=.y$year[!is.na(.y$E1)],
+      growth_rate_prior = NA,
+      growth_rate_prior_cv = 0.2)
+      #initial_state = 0.5,initial_state_cv = 0.25,b_ref_type = "k",
+      #final_u = 1.2,final_u_cv = 0.25, f_ref_type = "fmsy"
+      #sar = 4,
+      #fmi = c(
+        #"research" = .5,
+        #"management" = .5,
+        #"enforcement" = .35,
+        #"socioeconomics" = 0.7
+      #)
+    ))
+
+
+head(nested_indo)
+
+plot_driors(nested_indo$driors[[2]])
