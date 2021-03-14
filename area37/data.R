@@ -1,14 +1,18 @@
 ## Preprocess data, write TAF data tables
 
-## Before:
-## After:
+## Before: Area37cuyrrentsofia.csv,
+##         EffortindexRousseaAugNominal.csv (bootstrap/data)
+## After:  catch_by_stock.png, catch_relative.png, catch_total.png,
+##         driors_2.png, input.rds (data)
 
 library(icesTAF)
-
-library(tidyverse)
-library(sraplus)
-library(here)
-library(janitor)
+library(dplyr)   # filter, group_by, left_join, mutate, summarise, ungroup
+library(ggplot2)
+library(janitor) # clean_names
+library(purrr)   # map2
+library(sraplus) # format_driors
+library(stringr) # str_extract_all, str_replace_all, str_trim
+library(tidyr)   # nest, pivot_longer
 
 mkdir("data")
 
@@ -23,16 +27,13 @@ indo <- indo%>%
 # these names don't look right, are these coming from the FAO or local data? If FAO, even for that region there are usually genus-species names.
 # what's up with the
 
-
-
 ## ----Indo-catches,fig.cap="Individual trajectories of capture"------------------------------------
 
 indo %>%
   ggplot(aes(year, capture, color  = stock)) +
   geom_line(show.legend = FALSE) +
   geom_point()
-
-
+ggsave("data/catch_by_stock.png")
 
 ## ----indo-totals,fig.cap="Total trajectories of capture"------------------------------------------
 
@@ -41,8 +42,7 @@ indo %>%
   summarise(total_capture = sum(capture)) %>%
   ggplot(aes(year, total_capture)) +
   geom_line()
-
-
+ggsave("data/catch_total.png")
 
 ## -------------------------------------------------------------------------------------------------
 viable_stocks <- indo %>%
@@ -56,14 +56,12 @@ indo <- indo %>%
   filter(year > min(year[capture > 0]),
          year <= max(year[capture > 0]))
 
-
 indo %>%
   group_by(stock) %>%
   mutate(capture = capture / max(capture)) %>%
   ggplot(aes(year, capture, group = stock)) +
   geom_point()
-
-
+ggsave("data/catch_relative.png")
 
 ## -------------------------------------------------------------------------------------------------
 
@@ -74,8 +72,6 @@ indo <- indo %>%
   mutate(taxa = str_replace_all(taxa, "\\."," ") %>% str_trim()) %>%
   mutate(taxa = str_replace_all(taxa, "  "," ") %>% str_trim()) %>%
   filter(!is.na(taxa))
-
-
 
 ## -------------------------------------------------------------------------------------------------
 # setwd("C:\\Users\\rishi\\Documents\\Area37Marcelo")
@@ -90,7 +86,6 @@ nested_indo<- indo %>%
   group_by(stock, taxa) %>%
   nest() %>%
   ungroup()
-
 
 ## -------------------------------------------------------------------------------------------------
 
@@ -119,8 +114,9 @@ nested_indo <- nested_indo %>%
         #"socioeconomics" = 0.7
       #)
     ))
-
+saveRDS(nested_indo, "data/input.rds")
 
 head(nested_indo)
 
-plot_driors(nested_indo$driors[[2]])
+plot_driors(nested_indo$driors[[2]]) # stock 2 is Sardinella aurita
+ggsave("data/driors_2.png")
