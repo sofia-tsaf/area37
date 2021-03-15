@@ -30,5 +30,5 @@ install_github("DanOvando/sraplus")
 The results from each script appear in the corresponding working subdirectory.
 For example, the `data.R` script writes results into a folder called `data`.
 
-The scripts are run sequentially, in alphabetical order, so the `model.R` script
-reads from the `data` folder and writes into the `model` folder.
+The scripts are run sequentially in alphabetical order, so the `model.R` script
+reads from the `data` folder and writes into the `model` folder, and so on.
