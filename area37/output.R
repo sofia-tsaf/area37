@@ -2,8 +2,9 @@
 
 ## Before: results.rds (model)
 ## After:  stock_tables/*.csv, all_effort.txt, bbmsy.png, cpue_1.png,
-##         driors_1.png, posterior_1.png, proportions.png, status_sofia.png,
-##         status.png, stock_posterior.pdf, stock_timeseries.pdf (output)
+##         current_status.csv, driors_1.png, posterior_1.png, proportions.png,
+##         status_sofia.png, status_sraplus.png, stock_posterior.pdf,
+##         stock_timeseries.pdf (output)
 
 library(icesTAF)
 library(dplyr)        # case_when, count, group_by, select, filter, mutate
@@ -57,6 +58,7 @@ indo_results <- nested_indo %>%
   mutate(status = dplyr::case_when(mean > 1.2 ~ "underfished",
                                    mean > 0.8 ~ "fully fished",
                                    TRUE ~ "overfished"))
+write.taf(indo_results, "output/current_status.csv")
 
 indo_results %>%
   group_by(status) %>%
@@ -64,16 +66,16 @@ indo_results %>%
 
 ## -------------------------------------------------------------------------------------------------
 
-taf.png("output/status.png")
-resultsindo<-c(14/25,11/25,0/25)
-names(resultsindo)=c("fullyfished","overfished","underfished")
-barplot(resultsindo,col=c("yellow","red","green"))
+taf.png("output/status_sraplus.png")
+indo_results$status <- ordered(indo_results$status,
+                               c("underfished","fully fished","overfished"))
+barplot(prop.table(table(indo_results$status)), col=c("green","yellow","red"))
 dev.off()
 
 taf.png("output/status_sofia.png")
-resultsindoSOFIA<-c(0.35,0.625,0.025)
-names(resultsindoSOFIA)=c("fullyfished","overfished","underfished")
-barplot(resultsindoSOFIA,col=c("yellow","red","green"))
+resultsindoSOFIA<-c(0.025,0.35,0.625)
+names(resultsindoSOFIA)=c("underfished","fully fished","overfished")
+barplot(resultsindoSOFIA,col=c("green","yellow","red"))
 dev.off()
 
 ## -------------------------------------------------------------------------------------------------
