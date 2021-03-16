@@ -30,8 +30,9 @@ that have already been run.
 
 ## Dependencies
 
-This analysis uses the `sraplus` package, which has many underlying package
-dependencies. These are all installed automatically with one command:
+This analysis uses the [sraplus](https://github.com/DanOvando/sraplus) package,
+which has many underlying package dependencies. These are all installed
+automatically with one command:
 
 ```
 library(remotes)
