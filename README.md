@@ -15,6 +15,19 @@ taf.bootstrap()
 sourceAll()
 ```
 
+The `sourceAll` function runs the TAF scripts sequentially in alphabetical
+order:
+
+```
+data.R
+model.R
+output.R
+report.R
+```
+
+An alternative to `sourceAll` is the `makeAll` function, which omits TAF scripts
+that have already been run.
+
 ## Dependencies
 
 This analysis uses the `sraplus` package, which has many underlying package
@@ -30,5 +43,20 @@ install_github("DanOvando/sraplus")
 The results from each script appear in the corresponding working subdirectory.
 For example, the `data.R` script writes results into a folder called `data`.
 
-The scripts are run sequentially in alphabetical order, so `model.R` reads from
-the `data` folder and writes into the `model` folder, and so on.
+Since this analysis takes around 1 hour to run, the results are made available
+as `area37.zip` (~200 MB) on the
+[releases](https://github.com/arni-magnusson/sofia24/releases) page.
+
+## Learn more
+
+The [package help page](https://rdrr.io/cran/icesTAF/man/icesTAF-package.html)
+shows a complete list of R functions in the icesTAF package. At the bottom of
+the package help page there is also a list of references:
+
+- ICES Transparent Assessment Framework: https://taf.ices.dk.
+- To explore example TAF stock assessments, see the introductory video and
+  tutorial.
+- The TAF Wiki provides additional help resources.
+
+In an R session, the package help page can be brought up with the command
+`?icesTAF`.
