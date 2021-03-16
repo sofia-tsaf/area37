@@ -2,9 +2,9 @@
 
 ## Before: results.rds (model)
 ## After:  stock_tables/*.csv, all_effort.txt, bbmsy.png, cpue_1.png,
-##         current_status.csv, driors_1.png, posterior_1.png, proportions.png,
-##         status_sofia.png, status_sraplus.png, stock_posterior.pdf,
-##         stock_timeseries.pdf (output)
+##         current_status.csv, driors_1.png, posterior_1.png,
+##         status_by_year.png, status_sofia.png, status_sraplus.png,
+##         stock_posterior.pdf, stock_timeseries.pdf (output)
 
 library(icesTAF)
 library(dplyr)        # case_when, count, group_by, select, filter, mutate
@@ -133,8 +133,9 @@ dev.off()
 
 ## -------------------------------------------------------------------------------------------------
 
-nested_indo <- nested_indo %>%
-  mutate(sraplus_diagnostics = map2(sraplus_fit, driors, diagnose_sraplus))
+# Already have this column:
+# nested_indo <- nested_indo %>%
+#   mutate(sraplus_diagnostics = map2(sraplus_fit, driors, diagnose_sraplus))
 
 nested_indo$sraplus_diagnostics[[1]]$final_gradient
 
@@ -174,8 +175,9 @@ newResTab <- resTab
 names(newResTab)=c("Stock","yr","bbmsy","ffmsy")
 newResTab$bbmsy.effEdepP<-newResTab$bbmsy
 newResTab$ffmsy.effEdepP<-newResTab$ffmsy
+write.taf(newResTab, "output/stock_timeseries.csv")
 
-taf.png("output/proportions.png")
+taf.png("output/status_by_year.png")
 p1 <- plotProp(newResTab,method="effEdepP",cats=3, type="prop")
 p2 <- plotProp(newResTab,method="effEdepP",cats=3, type="all")
 ggarrange(p1,p2,ncol=1)
