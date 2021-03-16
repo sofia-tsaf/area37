@@ -58,7 +58,7 @@ The main benefits of running the SOFIA analysis in TAF are:
    **online servers**.
 
 10. Reproducibility also means we can organize close **collaboration** with
-   prolific research groups in fisheries science.
+    high-impact research groups in fisheries science.
 
 ---
 
