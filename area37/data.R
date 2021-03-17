@@ -16,107 +16,96 @@ library(tidyr)   # nest, pivot_longer
 
 mkdir("data")
 
-indo <- read.csv("bootstrap/data/Area37cuyrrentsofia.csv", header = TRUE)
-# this is what we would call an "wide" format which is really not condusive to analysis. We're going to make it longer
-
+## Read catch data, convert to tibble (long format)
+indo <- read.csv("bootstrap/data/Area37cuyrrentsofia.csv")
 indo <- indo%>%
-  pivot_longer(-c(Year, Total), names_to = "stock", values_to = "capture") %>%
+  pivot_longer(-c(Year, Total), names_to="stock", values_to="capture") %>%
   filter(!is.na(Year)) %>%
   janitor::clean_names()
 
-# these names don't look right, are these coming from the FAO or local data? If FAO, even for that region there are usually genus-species names.
-# what's up with the
-
-## ----Indo-catches,fig.cap="Individual trajectories of capture"------------------------------------
-
+## Plot catches
 indo %>%
-  ggplot(aes(year, capture, color  = stock)) +
-  geom_line(show.legend = FALSE) +
+  ggplot(aes(year, capture, color=stock)) +
+  geom_line(show.legend=FALSE) +
   geom_point()
 ggsave("data/catch_by_stock.png")
-
-## ----indo-totals,fig.cap="Total trajectories of capture"------------------------------------------
-
 indo %>%
   group_by(year) %>%
-  summarise(total_capture = sum(capture)) %>%
+  summarise(total_capture=sum(capture)) %>%
   ggplot(aes(year, total_capture)) +
   geom_line()
 ggsave("data/catch_total.png")
 
-## -------------------------------------------------------------------------------------------------
+## Select stocks with min 10 years of non-zero catches...
 viable_stocks <- indo %>%
   group_by(stock) %>%
-  summarise(n_pos_catch = sum(capture > 0)) %>%
+  summarise(n_pos_catch=sum(capture > 0)) %>%
   filter(n_pos_catch > 10)
 
+## ...and discard zero-catch years at the beginning or end of series
 indo <- indo %>%
   filter(stock %in% viable_stocks$stock) %>%
   group_by(stock) %>%
   filter(year > min(year[capture > 0]),
          year <= max(year[capture > 0]))
 
+## Plot relative catch
 indo %>%
   group_by(stock) %>%
   mutate(capture = capture / max(capture)) %>%
-  ggplot(aes(year, capture, group = stock)) +
+  ggplot(aes(year, capture, group=stock)) +
   geom_point()
 ggsave("data/catch_relative.png")
 
-## -------------------------------------------------------------------------------------------------
-
+## Add columns 'stock_number_thing' and 'taxa'
 indo <- indo %>%
   ungroup() %>%
-  mutate(stock_number_thing = str_extract_all(stock, '\\d')) %>%
-  mutate(taxa = str_replace_all(stock,"\\d",'')) %>%
-  mutate(taxa = str_replace_all(taxa, "\\."," ") %>% str_trim()) %>%
-  mutate(taxa = str_replace_all(taxa, "  "," ") %>% str_trim()) %>%
+  mutate(stock_number_thing=str_extract_all(stock, "\\d")) %>%
+  mutate(taxa = str_replace_all(stock, "\\d", "")) %>%
+  mutate(taxa = str_replace_all(taxa, "\\.", " ") %>% str_trim()) %>%
+  mutate(taxa = str_replace_all(taxa, "  ", " ") %>% str_trim()) %>%
   filter(!is.na(taxa))
 
-## -------------------------------------------------------------------------------------------------
-# setwd("C:\\Users\\rishi\\Documents\\Area37Marcelo")
-Indoeffort <- read.csv("bootstrap/data/EffortindexRousseaAugNominal.csv", header = TRUE)
-index<-Indoeffort$E1
-
+## Read effort data, add 'effort' column
+Indoeffort <- read.csv("bootstrap/data/EffortindexRousseaAugNominal.csv")
+index <- Indoeffort$E1
 indo <- indo %>%
-  left_join(Indoeffort, by = c("year" = "Year"))  #%>%
-  # filter(!is.na(E1))
+  left_join(Indoeffort, by=c("year"="Year"))
 
+## Create nested tibble with 'data' column (catch and effort)
 nested_indo<- indo %>%
   group_by(stock, taxa) %>%
   nest() %>%
   ungroup()
 
-## -------------------------------------------------------------------------------------------------
-
+## Add nested 'driors' column (data and priors)
 nested_indo <- nested_indo %>%
   mutate(
-    driors = map2(
+    driors=map2(
       taxa,
       data,
       ~
-      format_driors(
-      taxa = .x,shape_prior=2,      #use_heuristics = T,shape_prior=2,
-      catch = .y$capture,
-      years = .y$year,
-      initial_state = 0.75,initial_state_cv = 0.1,b_ref_type = "k",
-      terminal_state = 0.41,terminal_state_cv = 0.23,
-      effort = .y$E1[!is.na(.y$E1)],effort_years=.y$year[!is.na(.y$E1)],
-      growth_rate_prior = NA,
-      growth_rate_prior_cv = 0.2)
-      #initial_state = 0.5,initial_state_cv = 0.25,b_ref_type = "k",
-      #final_u = 1.2,final_u_cv = 0.25, f_ref_type = "fmsy"
-      #sar = 4,
-      #fmi = c(
-        #"research" = .5,
-        #"management" = .5,
-        #"enforcement" = .35,
-        #"socioeconomics" = 0.7
-      #)
+        format_driors(
+          taxa = .x,shape_prior=2,  # use_heuristics=TRUE, shape_prior=2,
+          catch = .y$capture,
+          years = .y$year,
+          initial_state = 0.75, initial_state_cv = 0.1, b_ref_type = "k",
+          terminal_state = 0.41, terminal_state_cv = 0.23,
+          effort = .y$E1[!is.na(.y$E1)], effort_years=.y$year[!is.na(.y$E1)],
+          growth_rate_prior = NA,
+          growth_rate_prior_cv = 0.2)
+      ## initial_state = 0.5,initial_state_cv = 0.25,b_ref_type = "k",
+      ## final_u = 1.2,final_u_cv = 0.25, f_ref_type = "fmsy"
+      ## sar = 4,
+      ## fmi = c(
+      ##   "research" = .5,
+      ##   "management" = .5,
+      ##   "enforcement" = .35,
+      ##   "socioeconomics" = 0.7
+      ## )
     ))
 saveRDS(nested_indo, "data/input.rds")
 
-head(nested_indo)
-
+## Plot driors for one stock
 plot_driors(nested_indo$driors[[2]]) # stock 2 is Sardinella aurita
 ggsave("data/driors_2.png")
