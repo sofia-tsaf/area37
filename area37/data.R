@@ -21,7 +21,7 @@ indo <- read.csv("bootstrap/data/Area37cuyrrentsofia.csv")
 indo <- indo%>%
   pivot_longer(-c(Year, Total), names_to="stock", values_to="capture") %>%
   filter(!is.na(Year)) %>%
-  janitor::clean_names()
+  clean_names()
 
 ## Plot catches
 indo %>%
@@ -73,7 +73,7 @@ indo <- indo %>%
   left_join(Indoeffort, by=c("year"="Year"))
 
 ## Create nested tibble with 'data' column (catch and effort)
-nested_indo<- indo %>%
+nested_indo <- indo %>%
   group_by(stock, taxa) %>%
   nest() %>%
   ungroup()
@@ -107,5 +107,5 @@ nested_indo <- nested_indo %>%
 saveRDS(nested_indo, "data/input.rds")
 
 ## Plot driors for one stock
-plot_driors(nested_indo$driors[[2]]) # stock 2 is Sardinella aurita
+plot_driors(nested_indo$driors[[2]])  # stock 2 is Sardinella aurita
 ggsave("data/driors_2.png")
