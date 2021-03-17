@@ -23,7 +23,7 @@ ggsave("report/driors_1.png")
 plot_prior_posterior(nested_indo$sraplus_fit[[1]], nested_indo$driors[[1]])
 ggsave("report/posterior_1.png")
 taf.png("cpue_1")
-plot(nested_indo$driors[[1]]$catch[nested_indo$driors[[1]]$years %in% nested_indo$driors[[1]]$effort_years] / nested_indo$driors[[1]]$effort)
+with(nested_indo$driors[[1]], plot(catch[years %in% effort_years] / effort))
 dev.off()
 
 ## Barplots of stock status
