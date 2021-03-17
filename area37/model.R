@@ -34,7 +34,8 @@ nested_indo <- nested_indo %>%
       cores = 1,
       #q_slope prior= ,
       estimate_qslope = FALSE,
-      estimate_proc_error = TRUE)
+      estimate_proc_error = TRUE,
+      cleanup = TRUE)
     ))
 setwd("..")
 
