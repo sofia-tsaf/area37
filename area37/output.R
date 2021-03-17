@@ -2,7 +2,7 @@
 
 ## Before: results.rds (model)
 ## After:  stock_tables/*.csv, all_effort.txt, bbmsy.png, cpue_1.png,
-##         current_status.csv, driors_1.png, posterior_1.png,
+##         current_status.csv, driors_1.png, posterior_1.png, results.rds,
 ##         status_by_year.png, status_sofia.png, status_sraplus.png,
 ##         stock_posterior.pdf, stock_timeseries.pdf (output)
 
@@ -18,6 +18,7 @@ source("utilities.R") # plotProp
 mkdir("output")
 
 nested_indo <- readRDS("model/results.rds")
+cp("model/results.rds", "output", move=TRUE)
 
 plot_driors(nested_indo$driors[[1]]) # stock 1 is Sardinella aurita
 ggsave("output/driors_1.png")
