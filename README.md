@@ -31,8 +31,8 @@ that have already been run.
 ## Dependencies
 
 This analysis uses the [sraplus](https://github.com/DanOvando/sraplus) package,
-which has many underlying package dependencies. These are all installed
-automatically with one command:
+which has many underlying package [dependencies](dependencies.md). These are all
+installed automatically with one command:
 
 ```
 library(remotes)
@@ -63,3 +63,7 @@ the package help page there is also a list of references:
 
 In an R session, the package help page can be brought up with the command
 `?icesTAF`.
+
+## Discussion points
+
+See [discussion.md](discussion.md).
