@@ -48,11 +48,11 @@ The main benefits of running the SOFIA analysis in TAF are:
 
 6. TAF lends itself well to **parallel** computing, decreasing run times.
 
-7. Extend the pipeline to generate **dynamic report** and feed into an
-   **interactive website**.
+7. The workflow pipeline can be extended to generate **dynamic report** and feed
+   into an **interactive website**.
 
-8. Designed for **open science**, where anyone can browse and download the
-   analysis.
+8. TAF analyses are well suited for **open science**, where anyone can browse
+   and download the analysis.
 
 9. Reproducibility means we can run the SOFIA analysis on our **laptops** or
    **online servers**.
