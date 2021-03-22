@@ -15,7 +15,7 @@
   as dynamic reports and interactive websites.
 
 - **Data provenance** - the workflow describes the origin of the data, version
-  control the data, and document in precise terms how they were processed.
+  controls the data, and documents in precise terms how they were processed.
 
 - **Reproducible** - the analysis can be run on any computer (today or after
   some years) to get the same results, using snapshots of the exact software
