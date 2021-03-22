@@ -1,4 +1,4 @@
-# sofia37
+# area37
 
 Experiment with Rishi, demonstrating how the SOFIA analysis for Area 37
 (Mediterranean and Black Sea) can run in TAF.
@@ -7,7 +7,7 @@ Experiment with Rishi, demonstrating how the SOFIA analysis for Area 37
 
 Install the icesTAF package from CRAN.
 
-Then open R in the `sofia37` directory and run:
+Then open R in the `area37` directory and run:
 
 ```
 library(icesTAF)
@@ -45,8 +45,8 @@ The results from each script appear in the corresponding working subdirectory.
 For example, the `data.R` script writes results into a folder called `data`.
 
 Since this analysis takes around 1 hour to run, the results are made available
-as release assets `sofia37.zip` (~200 MB) on the
-[releases](https://github.com/arni-magnusson/sofia37/releases) page.
+as release assets `area37.zip` (~200 MB) on the
+[releases](https://github.com/arni-magnusson/area37/releases) page.
 
 ## Learn more
 
