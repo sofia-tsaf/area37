@@ -31,7 +31,7 @@ that have already been run.
 ## Dependencies
 
 This analysis uses the [sraplus](https://github.com/DanOvando/sraplus) package,
-which has many underlying package [dependencies](dependencies.md). These are all
+which has many underlying package [dependencies](README_dependencies.md). These are all
 installed automatically with one command:
 
 ```
@@ -66,4 +66,4 @@ In an R session, the package help page can be brought up with the command
 
 ## Discussion points
 
-See [discussion.md](discussion.md).
+See [README_discussion.md](README_discussion.md).
