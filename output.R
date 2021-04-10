@@ -11,42 +11,42 @@ library(tidyr)   # pivot_wider, unnest
 mkdir("output")
 
 ## Read model results and make available in 'output' folder
-nested_indo <- readRDS("model/results.rds")
+stocks <- readRDS("model/results.rds")
 cp("model/results.rds", "output")
 
 ## Categorize stock status by comparing B/Bmsy to 0.8 and 1.2
-indo_results <- nested_indo %>%
+current_status <- stocks %>%
   select(stock, taxa, sraplus_summary) %>%
   unnest(cols = sraplus_summary) %>%
   filter(variable == "b_div_bmsy") %>%
   mutate(status = case_when(mean > 1.2 ~ "underfished",
                             mean > 0.8 ~ "fully fished",
                             TRUE ~ "overfished"))
-write.taf(indo_results, "output/current_status.csv")
-indo_results %>%
+write.taf(current_status, "output/current_status.csv")
+current_status %>%
   group_by(status) %>%
   count()
 
 ## Write stock tables containing model results by year
 mkdir("output/stock_tables")
-for(i in 1:nrow(nested_indo)){
-  write.csv(nested_indo$sraplus_fit[i][[1]]$results,
-            file=paste0("output/stock_tables/",nested_indo$stock[i],".csv"))
-  write.table(nested_indo$sraplus_fit[i][[1]]$results,
+for(i in 1:nrow(stocks)){
+  write.csv(stocks$sraplus_fit[i][[1]]$results,
+            file=paste0("output/stock_tables/",stocks$stock[i],".csv"))
+  write.table(stocks$sraplus_fit[i][[1]]$results,
               file="output/all_effort.txt", append=TRUE)
 }
 
 ## Examine diagnostics
-nested_indo$sraplus_diagnostics[[1]]$final_gradient
+stocks$sraplus_diagnostics[[1]]$final_gradient
 
 ## Tabulate B/Bmsy and F/Fmsy time series for each stock
-n <- length(nested_indo$stock)
+n <- length(stocks$stock)
 resList <- vector(mode="list", length=n)
 for(i in 1:n){
-  tmp <- nested_indo$sraplus_fit[[i]]$results %>%
+  tmp <- stocks$sraplus_fit[[i]]$results %>%
     filter(variable %in% c("b_div_bmsy","u_div_umsy")) %>%
     pivot_wider(id_cols="year", names_from="variable", values_from="mean")
-  resList[[i]] <- cbind(stock=nested_indo$stock[i], tmp)
+  resList[[i]] <- cbind(stock=stocks$stock[i], tmp)
 }
 resTab <- Reduce(rbind, resList)
 newResTab <- resTab

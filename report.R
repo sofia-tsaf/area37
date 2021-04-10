@@ -15,43 +15,43 @@ source("utilities.R") # plotProp
 
 mkdir("report")
 
-nested_indo <- readRDS("output/results.rds")
+stocks <- readRDS("output/results.rds")
 
 ## Plot data and priors, posteriors, and CPUE
-plot_driors(nested_indo$driors[[1]]) # stock 1 is Sardinella aurita
+plot_driors(stocks$driors[[1]]) # stock 1 is Sardinella aurita
 ggsave("report/driors_1.png")
-plot_prior_posterior(nested_indo$sraplus_fit[[1]], nested_indo$driors[[1]])
+plot_prior_posterior(stocks$sraplus_fit[[1]], stocks$driors[[1]])
 ggsave("report/posterior_1.png")
 taf.png("cpue_1")
-with(nested_indo$driors[[1]], plot(catch[years %in% effort_years] / effort))
+with(stocks$driors[[1]], plot(catch[years %in% effort_years] / effort))
 dev.off()
 
 ## Barplots of stock status
-indo_results <- read.taf("output/current_status.csv")
+current_status <- read.taf("output/current_status.csv")
 taf.png("status_sraplus")
-indo_results$status <- ordered(indo_results$status,
+current_status$status <- ordered(current_status$status,
                                c("underfished","fully fished","overfished"))
-barplot(prop.table(table(indo_results$status)), col=c("green","yellow","red"))
+barplot(prop.table(table(current_status$status)), col=c("green","yellow","red"))
 dev.off()
 taf.png("status_sofia")
-resultsindoSOFIA <- c(0.025, 0.35, 0.625)
-names(resultsindoSOFIA) <- c("underfished", "fully fished", "overfished")
-barplot(resultsindoSOFIA, col=c("green","yellow","red"))
+results_sofia <- c(0.025, 0.35, 0.625)
+names(results_sofia) <- c("underfished", "fully fished", "overfished")
+barplot(results_sofia, col=c("green","yellow","red"))
 dev.off()
 
 ## Plot posteriors and time series for each stock
-nested_indo <- nested_indo %>%
+stocks <- stocks %>%
   mutate(plot_prior_posterior_plot=
            map2(sraplus_fit,driors,plot_prior_posterior))
 savefoo <- function(stock, plot) print(plot + labs(title=stock))
 pdf("report/stock_posterior.pdf")
-walk2(nested_indo$stock, nested_indo$plot_prior_posterior_plot, savefoo)
+walk2(stocks$stock, stocks$plot_prior_posterior_plot, savefoo)
 dev.off()
-nested_indo <- nested_indo %>%
+stocks <- stocks %>%
   mutate(sraplus_fit_plot = map(sraplus_fit, plot_sraplus))
 savefoo <- function(stock, plot) print(plot + labs(title=stock))
 pdf("report/stock_timeseries.pdf")
-walk2(nested_indo$stock, nested_indo$sraplus_fit_plot, savefoo)
+walk2(stocks$stock, stocks$sraplus_fit_plot, savefoo)
 dev.off()
 
 ## Plot time series for each stock

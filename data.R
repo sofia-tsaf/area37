@@ -17,19 +17,19 @@ library(tidyr)   # nest, pivot_longer
 mkdir("data")
 
 ## Read catch data, convert to tibble (long format)
-indo <- read.csv("bootstrap/data/Area37cuyrrentsofia.csv")
-indo <- indo%>%
+catch <- read.csv("bootstrap/data/Area37cuyrrentsofia.csv")
+catch <- catch %>%
   pivot_longer(-c(Year, Total), names_to="stock", values_to="capture") %>%
   filter(!is.na(Year)) %>%
   clean_names()
 
 ## Plot catches
-indo %>%
+catch %>%
   ggplot(aes(year, capture, color=stock)) +
   geom_line(show.legend=FALSE) +
   geom_point()
 ggsave("data/catch_by_stock.png")
-indo %>%
+catch %>%
   group_by(year) %>%
   summarise(total_capture=sum(capture)) %>%
   ggplot(aes(year, total_capture)) +
@@ -37,20 +37,20 @@ indo %>%
 ggsave("data/catch_total.png")
 
 ## Select stocks with min 10 years of non-zero catches...
-viable_stocks <- indo %>%
+viable_stocks <- catch %>%
   group_by(stock) %>%
   summarise(n_pos_catch=sum(capture > 0)) %>%
   filter(n_pos_catch > 10)
 
 ## ...and discard zero-catch years at the beginning or end of series
-indo <- indo %>%
+catch <- catch %>%
   filter(stock %in% viable_stocks$stock) %>%
   group_by(stock) %>%
   filter(year > min(year[capture > 0]),
          year <= max(year[capture > 0]))
 
 ## Plot relative catch
-indo %>%
+catch %>%
   group_by(stock) %>%
   mutate(capture = capture / max(capture)) %>%
   ggplot(aes(year, capture, group=stock)) +
@@ -58,7 +58,7 @@ indo %>%
 ggsave("data/catch_relative.png")
 
 ## Add columns 'stock_number_thing' and 'taxa'
-indo <- indo %>%
+catch <- catch %>%
   ungroup() %>%
   mutate(stock_number_thing=str_extract_all(stock, "\\d")) %>%
   mutate(taxa = str_replace_all(stock, "\\d", "")) %>%
@@ -67,19 +67,19 @@ indo <- indo %>%
   filter(!is.na(taxa))
 
 ## Read effort data, add 'effort' column
-Indoeffort <- read.csv("bootstrap/data/EffortindexRousseaAugNominal.csv")
-index <- Indoeffort$E1
-indo <- indo %>%
-  left_join(Indoeffort, by=c("year"="Year"))
+effort <- read.csv("bootstrap/data/EffortindexRousseaAugNominal.csv")
+index <- effort$E1
+catch_effort <- catch %>%
+  left_join(effort, by=c("year"="Year"))
 
 ## Create nested tibble with 'data' column (catch and effort)
-nested_indo <- indo %>%
+stocks <- catch_effort %>%
   group_by(stock, taxa) %>%
   nest() %>%
   ungroup()
 
 ## Add nested 'driors' column (data and priors)
-nested_indo <- nested_indo %>%
+stocks <- stocks %>%
   mutate(
     driors=map2(
       taxa,
@@ -104,8 +104,8 @@ nested_indo <- nested_indo %>%
       ##   "socioeconomics" = 0.7
       ## )
     ))
-saveRDS(nested_indo, "data/input.rds")
+saveRDS(stocks, "data/input.rds")
 
 ## Plot driors for one stock
-plot_driors(nested_indo$driors[[2]])  # stock 2 is Sardinella aurita
+plot_driors(stocks$driors[[2]])  # stock 2 is Sardinella aurita
 ggsave("data/driors_2.png")
