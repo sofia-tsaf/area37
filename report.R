@@ -27,16 +27,17 @@ with(stocks$driors[[1]], plot(catch[years %in% effort_years] / effort))
 dev.off()
 
 ## Barplots of stock status
-current_status <- read.taf("output/current_status.csv")
 taf.png("status_sraplus")
+current_status <- read.taf("output/current_status.csv")
 current_status$status <- ordered(current_status$status,
-                               c("underfished","fully fished","overfished"))
+                                 c("underfished","fully fished","overfished"))
 barplot(prop.table(table(current_status$status)), col=c("green","yellow","red"))
 dev.off()
 taf.png("status_sofia")
-results_sofia <- c(0.025, 0.35, 0.625)
-names(results_sofia) <- c("underfished", "fully fished", "overfished")
-barplot(results_sofia, col=c("green","yellow","red"))
+results_sofia <- read.taf("bootstrap/data/sofia20_proportions_area37.csv")
+results_sofia$Category <- ordered(results_sofia$Category,
+                                  c("Underfished","Fully fished","Overfished"))
+barplot(Proportion~Category, results_sofia, col=c("green","yellow","red"))
 dev.off()
 
 ## Plot posteriors and time series for each stock
