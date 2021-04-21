@@ -5,12 +5,12 @@ Experiment with Rishi, demonstrating how the SOFIA analysis for Area 37
 
 ## How to run
 
-Install the icesTAF package from CRAN.
+Install the TAF package from CRAN.
 
 Then open R in the `area37` directory and run:
 
 ```
-library(icesTAF)
+library(TAF)
 taf.bootstrap()
 sourceAll()
 ```
@@ -50,9 +50,9 @@ as release assets `area37_results_*.zip` (~200 MB) on the
 
 ## Learn more
 
-The [package help page](https://rdrr.io/cran/icesTAF/man/icesTAF-package.html)
-shows a complete list of R functions in the icesTAF package. At the bottom of
-the package help page there is also a list of references:
+The [package help page](https://rdrr.io/cran/TAF/man/TAF-package.html) shows a
+complete list of R functions in the TAF package. At the bottom of the package
+help page there is also a list of references:
 
 - ICES Transparent Assessment Framework: https://taf.ices.dk.
 - To explore example TAF stock assessments, see the introductory
@@ -62,7 +62,7 @@ the package help page there is also a list of references:
   resources.
 
 In an R session, the package help page can be brought up with the command
-`?icesTAF`.
+`?TAF`.
 
 ## Discussion points
 
