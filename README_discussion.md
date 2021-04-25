@@ -7,8 +7,8 @@
 - **Modular** - the analysis is divided into well defined steps, with a separate
   script for each step.
 
-- **Structured** - the scripts are run sequentially, with each script ose of
-  each script is clear, scripts are tightly linked with each other
+- **Structured** - the scripts are run sequentially, the purpose of each script
+  is clear, scripts are tightly linked with each other
 
 - **Generic** - each script ends by writing out files in generic formats (often
   \*.csv and \*.png) that can be used by any software to create products, such
