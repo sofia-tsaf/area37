@@ -64,6 +64,6 @@ help page there is also a list of references:
 In an R session, the package help page can be brought up with the command
 `?TAF`.
 
-## Discussion points
+## TAF discussion points
 
-See [README_discussion.md](README_discussion.md).
+See [README_taf.md](README_taf.md).

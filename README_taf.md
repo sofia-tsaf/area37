@@ -1,8 +1,8 @@
-# Discussion
+# TAF
 
 ---
 
-## What characterizes a TAF analysis?
+## A TAF analysis is
 
 - **Modular** - the analysis is divided into well defined steps, with a separate
   script for each step.
