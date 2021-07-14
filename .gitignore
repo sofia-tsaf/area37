@@ -3,5 +3,7 @@ data/*
 model/*
 output/*
 report/*
+report.html
+report.pdf
 .Rproj.user
 *.Rproj
