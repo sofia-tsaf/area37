@@ -1,6 +1,7 @@
 ## Prepare plots and tables for report
 
-## Before: current_status.csv, results.rds, stock_timeseries.csv (output)
+## Before: sofia20_proportions.csv (bootstrap/data), current_status.csv,
+##         results.rds, stock_timeseries.csv (output)
 ## After:  bbmsy.png, cpue_1.png, driors_1.png, posterior_1.png,
 ##         status_by_year.png, status_sofia.png, status_sraplus.png,
 ##         stock_posterior.pdf, stock_timeseries.pdf (report)
@@ -34,7 +35,7 @@ current_status$status <- ordered(current_status$status,
 barplot(prop.table(table(current_status$status)), col=c("green","yellow","red"))
 dev.off()
 taf.png("status_sofia")
-results_sofia <- read.taf("bootstrap/data/sofia20_proportions_area37.csv")
+results_sofia <- read.taf("bootstrap/data/sofia20_proportions.csv")
 results_sofia$Category <- ordered(results_sofia$Category,
                                   c("Underfished","Fully fished","Overfished"))
 barplot(Proportion~Category, results_sofia, col=c("green","yellow","red"))
